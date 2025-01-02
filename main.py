@@ -2,7 +2,7 @@ import pygame, sys
 from random import randint, uniform
 
 
-def laser_update(laser_lst, speed=300):
+def laser_update(laser_lst, speed=500):
     for rect in laser_lst:
         rect.y -= round(speed * dt)
         if rect.bottom < 0:
@@ -18,9 +18,9 @@ def meteor_update(meteor_lst, speed=300):
             meteor_lst.remove(meteor_tuple)
 
 
-def display_score(_can_shoot):
+def display_score(_can_shoot, _score):
     color = "white" if _can_shoot else "gray"
-    score_text = f"Score: {pygame.time.get_ticks() // 1000}"
+    score_text = f"Score: {_score}"
     text_surf = font.render(score_text, True, "White")
     text_rect =text_surf.get_rect(midbottom = (WINDOW_WIDTH / 2 , WINDOW_HEIGHT - 80))
     display_surface.blit(text_surf, text_rect)
@@ -65,7 +65,7 @@ font = pygame.font.Font("graphics/subatomic.ttf", 50)
 
 # meteor timer
 meteor_timer = pygame.event.custom_type()
-pygame.time.set_timer(meteor_timer, 1000)
+pygame.time.set_timer(meteor_timer, 750)
 
 # meteor import
 meteor_surf = pygame.image.load("graphics/meteor.png").convert_alpha()
@@ -81,6 +81,9 @@ explosion_sound.set_volume(0.25)
 background_music.set_volume(0.25)
 
 background_music.play(loops=-1)
+
+# score
+score = 0
 
 # main loop
 while True:
@@ -129,7 +132,7 @@ while True:
     for meteor_tuple in meteor_list:
         meteor_rect = meteor_tuple[0]
         if ship_rect.colliderect(meteor_rect):
-            pass
+            score = 0
 
     # laser meteor collisions
     for laser_rect in laser_list:
@@ -139,11 +142,12 @@ while True:
                 meteor_list.remove(meteor_tuple)
                 laser_list.remove(laser_rect)
                 explosion_sound.play()
+                score += 1
 
     # drawing
     display_surface.fill((0, 0, 0))
     display_surface.blit(bg_surf, (0, 0))
-    display_score(can_shoot)
+    display_score(can_shoot, score)
 
     for rect in laser_list:
         display_surface.blit(laser_surf, rect)
