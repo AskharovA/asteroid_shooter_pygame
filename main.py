@@ -1,5 +1,6 @@
 import pygame, sys
 from random import randint, uniform
+from menu import Menu
 
 
 class Ship(pygame.sprite.Sprite):
@@ -141,6 +142,8 @@ pygame.time.set_timer(meteor_timer, 500)
 background_music = pygame.mixer.Sound("sounds/music.wav")
 background_music.set_volume(0.25)
 background_music.play(loops=-1)
+
+Menu(display_surface).run()
 
 # main loop
 while True:
